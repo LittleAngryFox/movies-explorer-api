@@ -3,6 +3,7 @@ const Movie = require('../models/movie'); //модель сохраненных 
 const NotFoundError = require('../errors/not-fount-err');
 const ValidationError = require('../errors/validation-err');
 const ForbiddenError = require('../errors/forbidden-err');
+const { incorrectDataError, accessError, notFoundError } = require('../const');
 
 //GET/movies получение списка всех карточек
 const getMovies = (req, res, next) => {
@@ -53,7 +54,7 @@ const postMovie = (req, res, next) => {
     })
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        const err = new ValidationError('Данные некорректны');
+        const err = new ValidationError(incorrectDataError);
         next(err);
       }
       next(e.message);
@@ -64,7 +65,7 @@ const postMovie = (req, res, next) => {
 const deleteOneCard = (res, cardId) => {
   Movie.findByIdAndRemove({ _id: cardId })
     .populate({ path: 'owner' })
-    .orFail(new NotFoundError('Сохраненный фильм не найден'))
+    .orFail(new NotFoundError(notFoundError))
     .then((item) => res.send(item));
 };
 
@@ -72,10 +73,10 @@ const deleteOneCard = (res, cardId) => {
 const deleteCard = (req, res, next) => {
   const { movieId } = req.params;
   Movie.findById({ _id: movieId })
-    .orFail(new NotFoundError('Сохраненный фильм не найден'))
+    .orFail(new NotFoundError(notFoundError))
     .then((item) => {
       if (!(JSON.stringify(item.owner._id) === JSON.stringify(req.user._id))) {
-        throw new ForbiddenError('Нет прав на удаление данной записи');
+        throw new ForbiddenError(accessError);
       }
       return deleteOneCard(res, movieId);
     })
@@ -84,7 +85,7 @@ const deleteCard = (req, res, next) => {
         next(e);
       }
       if (e.name === 'CastError') {
-        const err = new ValidationError('Данные некорректны');
+        const err = new ValidationError(incorrectDataError);
         next(err);
       }
       next(e.message);

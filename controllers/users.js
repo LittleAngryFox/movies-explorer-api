@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-fount-err');
 const ValidationError = require('../errors/validation-err');
+const {
+  incorrectDataError,
+  userNotFoundError,
+  notUniqueError,
+} = require('../const');
 
 const { NODE_ENV, JWT_SECRET = 'devKey' } = process.env;
 
@@ -12,11 +17,11 @@ const getUser = (req, res, next) => {
   const id = req.user._id;
 
   User.findById({ _id: id })
-    .orFail(new NotFoundError('Пользователь не найден'))
+    .orFail(new NotFoundError(userNotFoundError))
     .then((item) => res.send(item))
     .catch((e) => {
       if (e.name === 'CastError') {
-        const err = new ValidationError('Данные некорректны');
+        const err = new ValidationError(incorrectDataError);
         next(err);
       }
       next(e.message);
@@ -37,11 +42,11 @@ const createUser = (req, res, next) => {
     }))
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        const err = new ValidationError('Данные некорректны');
+        const err = new ValidationError(incorrectDataError);
         next(err);
       }
       if (e.code === 11000) {
-        const err = new ValidationError(`Почтовый адрес ${email} не уникальный`);
+        const err = new ValidationError(notUniqueError(email));
         err.statusCode = 409;
         next(err);
       }
@@ -55,15 +60,15 @@ const patchUser = (req, res, next) => {
   const userId = req.user._id;
   User.findByIdAndUpdate(userId, { email, name },
     { new: true, runValidators: true, omitUndefined: true })
-    .orFail(new NotFoundError('Пользователь не найден'))
+    .orFail(new NotFoundError(userNotFoundError))
     .then((user) => res.send(user))
     .catch((e) => {
       if (e.name === 'ValidationError') {
-        const err = new ValidationError('Данные некорректны');
+        const err = new ValidationError(incorrectDataError);
         next(err);
       }
       if (e.code === 11000) {
-        const err = new ValidationError(`Почтовый адрес ${email} не уникальный`);
+        const err = new ValidationError(notUniqueError(email));
         err.statusCode = 409;
         next(err);
       }

@@ -9,8 +9,10 @@ const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index');
 const apiLimiter = require('./middlewares/rateLimiter');
+const errorHandler = require('./middlewares/errorHandler');
+const { DEV_PATH } = require('./config');
 
-const { PORT = 3000, MONGO_BASE = 'mongodb://localhost:27017/bitfilmsdb' } = process.env;
+const { PORT = 3000, MONGO_BASE = DEV_PATH } = process.env;
 const app = express();
 
 //подключение базы данных
@@ -46,20 +48,7 @@ app.use(errorLogger);
 app.use(errors());
 
 //обработчик остальных ошибок
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

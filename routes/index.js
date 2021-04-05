@@ -4,10 +4,11 @@ const moviesRouter = require('./moviesRoute');
 const authRouter = require('./authRoute');
 const auth = require('../middlewares/auth');
 const NotFoundError = require('../errors/not-fount-err');
+const { routeNotFoundError } = require('../const');
 
 //не существующий путь
 const invalidLink = (req, res, next) => {
-  const err = new NotFoundError('Запрашиваемый ресурс не найден');
+  const err = new NotFoundError(routeNotFoundError);
   next(err);
 };
 
