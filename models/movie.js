@@ -38,7 +38,7 @@ const movieSchema = new mongoose.Schema({
     },
   },
   //Ссылка на трейлер фильма - обязательное поле, строка, URL
-  trailer: {
+  trailerLink: {
     type: String,
     required: [true, 'Поле "trailer" должно быть заполнено'],
     validate: {
@@ -62,9 +62,9 @@ const movieSchema = new mongoose.Schema({
     required: [true, 'Поле "owner" должно быть заполнено'],
   },
   //id фильма, который содержится в ответе сервиса MoviesExplorer - обязательное поле.
-  movieId: {
+  id: {
     type: String,
-    required: [true, 'Поле "movieId" должно быть заполнено'],
+    required: [true, 'Поле "id" должно быть заполнено'],
   },
   //Название фильма на русском языке - обязательное поле, строка.
   nameRU: {

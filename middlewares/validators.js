@@ -125,7 +125,7 @@ const validatorMovieBody = celebrate({
         'any.required': 'Поле "image" должно быть заполнено',
         'string.empty': 'Поле "image" не может быть пустым',
       }),
-    trailer: Joi.string().required().custom((value, helpers) => {
+    trailerLink: Joi.string().required().custom((value, helpers) => {
       if (validator.isURL(value)) {
         return value;
       }
@@ -145,7 +145,7 @@ const validatorMovieBody = celebrate({
         'any.required': 'Поле "thumbnail" должно быть заполнено',
         'string.empty': 'Поле "thumbnail" не может быть пустым',
       }),
-    movieId: Joi.number().required()
+    id: Joi.number().required()
       .messages({
         'any.required': 'Поле "movieId" должно быть заполнено',
         'number.base': 'Поле "duration" должно быть числом',
