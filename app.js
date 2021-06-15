@@ -8,7 +8,7 @@ const { errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const routes = require('./routes/index');
-//const apiLimiter = require('./middlewares/rateLimiter');
+const apiLimiter = require('./middlewares/rateLimiter');
 const errorHandler = require('./middlewares/errorHandler');
 const { DEV_PATH } = require('./config');
 
@@ -38,7 +38,7 @@ app.use(cors());
   }, 0);
 }); */
 
-//app.use(apiLimiter);
+app.use(apiLimiter);
 app.use('/', routes);
 
 //логер ошибок
