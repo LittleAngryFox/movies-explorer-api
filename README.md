@@ -1,6 +1,6 @@
 # movies-explorer-api
 
 # Сайт
-- frontend: https://lenin.movies.students.nomoredomains.icu (в разработке)
+- frontend: https://lenin.movies.students.nomoredomains.icu
 - backend: https://api.lenin.movies.students.nomoredomains.icu
-- 178.154.201.152
+- 178.154.228.150
